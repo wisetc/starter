@@ -5,8 +5,8 @@
   "main": "gulpfile.js",
   "scripts": {
     "start": "browser-sync start --server --files \"css/*.css, js/*.js, *.html\"",
-    "sass": "node-sass scss -o css",
-    "pug": "pug pug/*.pug -Po .",
+    "sass": "node-sass scss -o css -w",
+    "pug": "pug pug -Po . -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,8 +15,6 @@
     "browser-sync": "^2.18.2",
     "gulp": "^3.9.1",
     "gulp-pug": "^3.2.0",
-    "gulp-sass": "^2.3.2",
-    "pug": "^2.0.0-beta6",
-    "node-sass": "^4.0.0"
+    "gulp-sass": "^2.3.2"
   }
 }
