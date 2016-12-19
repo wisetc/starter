@@ -1,15 +1,17 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass'),
     pug = require('gulp-pug'),
-    browserSync = require('browser-sync').create();
+    ts = require("gulp-typescript"),
+    tsProject = ts.createProject("tsconfig.json"),
+    browserSync = require('browser-sync').create(),
+    reload = browserSync.reload;
 
 var files = {
     pug: 'pug/*.pug',
     markup: ['pug/*.pug', 'pug/**/*.html'],
-    styles: 'scss/*.scss',
-    scripts: 'js/*.js'
+    scss: 'scss/*.scss',
+    typescript: 'ts/*.ts'
 }
-reload = browserSync.reload;
 
 gulp.task('pug', function(){
     return gulp.src(files.pug)
@@ -23,17 +25,23 @@ gulp.task('pug', function(){
 });
 
 gulp.task('sass', function(){
-    return gulp.src(files.styles)
+    return gulp.src(files.scss)
     .pipe(sass({
 
     }).on('error', sass.logError))
     .pipe(gulp.dest('css'));
 });
 
+gulp.task("ts", function () {
+    return tsProject.src()
+        .pipe(tsProject())
+        .js.pipe(gulp.dest("js"));
+});
+
 gulp.task('watch', function(){
-    gulp.watch(files.styles, ['sass', reload]);
+    gulp.watch(files.scss, ['sass', reload]);
     gulp.watch(files.markup, ['pug', reload]);
-    return gulp.watch(files.scripts, reload);
+    return gulp.watch(files.typescript, ['ts', reload]);
 });
 
 gulp.task('serve', function(){
@@ -44,4 +52,4 @@ gulp.task('serve', function(){
     });
 });
 
-gulp.task('default', ['watch', 'pug', 'sass', 'serve']);
+gulp.task('default', ['watch', 'pug', 'sass','ts', 'serve']);
