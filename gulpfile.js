@@ -17,8 +17,9 @@ gulp.task('pug', function(){
     return gulp.src(files.pug)
     .pipe(pug({
         pretty: true
-    }).on('error', function(){
+    }).on('error', function(e){
         console.log('pug went wrong.');
+        console.log(e.message);
         this.end();
     }))
     .pipe(gulp.dest('.'));
