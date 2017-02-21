@@ -1,56 +1,37 @@
-var gulp = require('gulp'),
-    sass = require('gulp-sass'),
-    pug = require('gulp-pug'),
-    ts = require("gulp-typescript"),
-    tsProject = ts.createProject("tsconfig.json"),
-    browserSync = require('browser-sync').create(),
-    reload = browserSync.reload;
+'use strict';
 
-var files = {
-    pug: 'pug/*.pug',
-    markup: ['pug/*.pug', 'pug/**/*.html'],
-    scss: 'scss/*.scss',
-    typescript: 'ts/*.ts'
-}
+var gulp = require('gulp'),
+    scss = require('gulp-sass'),
+    pug = require('gulp-pug'),
+    plumber = require('gulp-plumber'),
+    gutil = require('gulp-util'),
+    notify = require('gulp-notify'),
+    browserSync = require('browser-sync').create();
+
+gulp.task('scss', function(){
+    return gulp.src('scss/*/*.scss')
+        // .pipe(scss({outputStyle: 'compressed'}).on('error', scss.logError))
+        .pipe(scss().on('error', scss.logError))
+        .pipe(gulp.dest('css'));
+});
 
 gulp.task('pug', function(){
-    return gulp.src(files.pug)
-    .pipe(pug({
-        pretty: true
-    }).on('error', function(e){
-        console.log('pug went wrong.');
-        console.log(e.message);
-        this.end();
-    }))
-    .pipe(gulp.dest('.'));
+    return gulp.src('pug/*/*.pug')
+        // .pipe(plumber())
+        .pipe( pug({ pretty: true }).on('error', notify.onError( (error) => { return `pug went wrong, ${error}`; } )) )
+        .pipe(gulp.dest('page'));
 });
 
-gulp.task('sass', function(){
-    return gulp.src(files.scss)
-    .pipe(sass({
+gulp.task('build', ['scss', 'pug']);
 
-    }).on('error', sass.logError))
-    .pipe(gulp.dest('css'));
-});
-
-gulp.task("ts", function () {
-    return tsProject.src()
-        .pipe(tsProject())
-        .js.pipe(gulp.dest("js"));
-});
-
-gulp.task('watch', function(){
-    gulp.watch(files.scss, ['sass', reload]);
-    gulp.watch(files.markup, ['pug', reload]);
-    return gulp.watch(files.typescript, ['ts', reload]);
-});
-
-gulp.task('serve', function(){
+var cwd = process.cwd();
+gulp.task('default', ['scss', 'pug'], function(){
     browserSync.init({
         server: {
             baseDir: '.'
         }
     });
+    gulp.watch('scss/*/*.scss', {cwd: cwd}, ['scss', browserSync.reload]);
+    gulp.watch('pug/*/*.pug', {cwd: cwd}, ['pug', browserSync.reload]);
 });
 
-gulp.task('default', ['watch', 'pug', 'sass','ts', 'serve']);
