@@ -7,7 +7,7 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync').create();
 
 var sourceFile = {
-    scss: 'scss/*.scss',
+    scss: 'scss/**/*.scss',
     pug: 'pug/**/*.pug'
 }
 
