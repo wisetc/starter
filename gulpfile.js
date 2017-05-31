@@ -12,7 +12,7 @@ var sourceFile = {
 }
 
 var outputDir = {
-    css: 'css/site',
+    css: 'assets/css/site',
     html: '.'
 }
 
